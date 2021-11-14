@@ -14,3 +14,7 @@ a {
 * {
   box-sizing: border-box;
 }
+
+.highcharts-grid-line:not(:first-child){
+  display:none;
+}
