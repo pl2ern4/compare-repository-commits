@@ -1,4 +1,5 @@
 import styles from '../../styles/Home.module.css';
+import { useStore } from '../../context/store-context/StoreContext';
 import Highcharts from 'highcharts/'
 import HighchartsReact from 'highcharts-react-official';
 
@@ -66,10 +67,17 @@ const options = {
 };
 
 const GridBox = () => {
+    const { commitData=[] } = useStore();
+    let series = [];
+    if(!commitData?.length){
+        series = [{ data: [] }]
+    }
+    const newOptions = {...options, series}
+    console.log(newOptions);
     return (
         <HighchartsReact
             highcharts={Highcharts}
-            options={options}
+            options={newOptions}
         />
     )
 }

@@ -10,6 +10,9 @@
   }
 }
 
+.hide{
+  display:none;
+}
 /*********** Input Section ********/
 .repositoryInputSection {
   width: 100%;
@@ -85,7 +88,6 @@
   background-color: #08080c;
   margin: 1rem auto;
   list-style: none;
-  text-transform: capitalize;
   padding: 1rem .5rem;
   border-left: 0.5rem solid;
   transition: transform .2s;
@@ -137,6 +139,38 @@
 .inputWrapper{
   display:flex
 }
+
+.searchedOptions input{
+  border-bottom-left-radius:0;
+}
+.searchedOptions div{
+  border-bottom-right-radius:0;
+}
+/************************/
+
+/************************/
+
+.searchRepoListWrapper{
+  
+  
+}
+
+.searchRepoList{
+  background-color: white;
+  list-style: none;
+  margin:unset;
+  padding:unset
+}
+
+.searchRepoListItem{
+  padding: 1rem;
+  cursor:pointer;
+}
+
+.searchRepoListItem span:nth-child(2){
+  color: black;
+}
+
 /************************/
 
 /*********** Grid ********/

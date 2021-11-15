@@ -1,78 +1,90 @@
-import { getRepository } from '../helper/getResponse';
+import { getUniqueColor } from '../helper/getUniqueColor';
+import { getFormatedTime, getFormatedDate } from '../helper/getFormatedTime';
+import { getFormatedStars } from '../helper/getFormatedStars';
 
 const constant = {
-    SET_SEARCHKEYWORD:'SET_SEARCHKEYWORD',
-    Add_REPO_IN_LIST: 'Add_REPO_IN_LIST',
-    DELETE_REPO_FROM_LIST:'DELETE_REPO_FROM_LIST'
+    SET_SEARCHKEYWORD: 'SET_SEARCHKEYWORD',
+    ADD_REPO_LIST: 'ADD_REPO_LIST',
+    DELETE_REPO_FROM_LIST: 'DELETE_REPO_FROM_LIST',
+    SEARCHREPOLIST: 'SEARCHREPOLIST',
+    SET_COMMITDATA: 'SET_COMMITDATA'
 }
 
 export const initialState = {
-    searchKeyword:'',
-    repositoryList:[{
-        owner: 'test',
-        repo: 'testing',
-        color: 'green',
-        star: false,
-        follower: '98.8k',
-        lastupdated: 'Updated 2 hours ago'
-    },
-    {
-        owner: 'test',
-        repo: 'testing',
-        color: 'red',
-        star: true,
-        follower: '98.8k',
-        lastupdated: 'Updated 2 hours ago'
-    },
-    {
-        owner: 'test',
-        repo: 'testing',
-        color: 'yellow',
-        star: false,
-        follower: '98.8k',
-        lastupdated: 'Updated 2 hours ago'
-    }
-    ]
+    searchKeyword: '',
+    searchedOptions: [],
+    commitData: [],
+    repositoryList: []
 }
 
-export const setSearchKeyword = (searchKeyword) => {
-    const respo = getRepository(searchKeyword);
-   return {
-        type: constant.SET_SEARCHKEYWORD,
-        searchKeyword
-    };
-};
-
-export const AddEntryInList = (searchKeyword) => ({
-    type: constant.Add_REPO_IN_LIST,
-    searchKeyword,
+export const setSearchKeyword = (searchKeyword) => ({
+    type: constant.SET_SEARCHKEYWORD,
+    searchKeyword
 });
 
 
+export const fetchRepoList = (data) => ({
+    type: constant.SEARCHREPOLIST,
+    searchedOptions: data
+})
+
+export const fetchItemDetail = (commitData=[]) => ({
+    type: constant.SET_COMMITDATA,
+    commitData,
+})
+
 export const deleteEntryFromList = (index, repositoryList) => {
-    const repositoryListTemp = repositoryList.splice(index, 1);
     return ({
-    type: constant.DELETE_REPO_FROM_LIST,
-    repositoryList: repositoryListTemp
-});}
+        type: constant.DELETE_REPO_FROM_LIST,
+        repositoryList: repositoryList.filter(obj=>obj.id !== index)
+    });
+}
+
+
+export const addRepoInList = (repoItem, repositoryList=[]) => {
+    const updatedRepoList = { ...repoItem, 
+                                lastupdated: getFormatedTime(repoItem.lastupdated), 
+                                follower: getFormatedStars(repoItem.follower),
+                                color: getUniqueColor(repositoryList.map(obj => obj.color)) 
+                            }
+    const repositoryListTemp = [...repositoryList]
+    repositoryListTemp.push(updatedRepoList);
+    return ({
+        type: constant.ADD_REPO_LIST,
+        repositoryList: repositoryListTemp
+    });
+}
 
 
 export const globalReducer = (state = initialState, action) => {
-    switch(action.type){
-        case constant.SET_SEARCHKEYWORD: 
+    switch (action.type) {
+        case constant.SET_SEARCHKEYWORD:
             return {
                 ...state,
-                searchKeyword:action.searchKeyword
-        };
-        case constant.Add_REPO_IN_LIST:
+                searchKeyword: action.searchKeyword
+            };
+        case constant.SEARCHREPOLIST:
             return {
-                ...state
+                ...state,
+                searchedOptions: action.searchedOptions
             }
         case constant.DELETE_REPO_FROM_LIST:
             return {
-                ...state
+                ...state,
+                repositoryList: action.repositoryList
             }
-            
+        case constant.ADD_REPO_LIST:
+            return {
+                ...state,
+                repositoryList: action.repositoryList
+            }
+        case constant.SET_COMMITDATA:
+            return {
+                ...state,
+                commitData:action.commitData,
+                searchedOptions: [],
+                searchKeyword:''
+            }
     }
 
 }
