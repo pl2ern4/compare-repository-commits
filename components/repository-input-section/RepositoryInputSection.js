@@ -15,17 +15,13 @@ const RepositoryInputSection = () => {
     searchKeyword,
     searchedOptions = [],
     repositoryList = [],
-    commitData = [],
     dispatch,
   } = useStore();
 
   const handleChange = (e) =>
     debounce(dispatch(setSearchKeyword(e.target.value)), 1000);
 
-  const deleteItem = (index) => {
-    console.log(index);
-    dispatch(deleteEntryFromList(index, repositoryList));
-  };
+  const deleteItem = (index) => dispatch(deleteEntryFromList(index, repositoryList));
 
   const handleItemClick = (obj) => {
     dispatch(
@@ -47,22 +43,22 @@ const RepositoryInputSection = () => {
     }).then((repositoryList) => {
       const updatedRepositoryList =
         (repositoryList &&
+        repositoryList.data &&
+        repositoryList.data.map &&
           repositoryList.data.map((obj) => ({
-            time: getFormatedDate(obj.week),
-            y: new Date(obj.week * 1000),
+            name: getFormatedDate(obj.week),
+            x: new Date(obj.week * 1000).getMonth(),
+            y: obj.total,
             commit: `${obj.total} commit${(obj.total > 0 && `s`) || ""}`,
           }))) ||
         [];
-      const newCommitData = [
-        ...commitData,
-        {
-          name: "backbone.stickit",
-          description: null,
-          color: "yellow",
-          data: updatedRepositoryList,
-        },
-      ];
-      dispatch(fetchItemDetail([...newCommitData]));
+      const newCommitData = {
+        id: obj.id,
+        name: obj?.name,
+        description: null,
+        data: updatedRepositoryList,
+      };
+      dispatch(fetchItemDetail(newCommitData));
     });
   };
 

@@ -28,7 +28,7 @@ export const fetchRepoList = (data) => ({
     searchedOptions: data
 })
 
-export const fetchItemDetail = (commitData=[]) => ({
+export const fetchItemDetail = (commitData) => ({
     type: constant.SET_COMMITDATA,
     commitData,
 })
@@ -47,6 +47,12 @@ export const addRepoInList = (repoItem, repositoryList=[]) => {
                                 follower: getFormatedStars(repoItem.follower),
                                 color: getUniqueColor(repositoryList.map(obj => obj.color)) 
                             }
+    const isExist = repositoryList.filter(obj=>obj.id===repoItem.id);
+    if(isExist.length){
+        return{
+            type:''
+        };
+    }
     const repositoryListTemp = [...repositoryList]
     repositoryListTemp.push(updatedRepoList);
     return ({
@@ -79,12 +85,20 @@ export const globalReducer = (state = initialState, action) => {
                 repositoryList: action.repositoryList
             }
         case constant.SET_COMMITDATA:
+            const newCommitData = [...state.commitData];
+            const color = state.repositoryList?.find(obj=>obj.id=== action.commitData.id)?.color;
+            newCommitData.push({...action.commitData, color});
             return {
                 ...state,
-                commitData:action.commitData,
+                commitData:newCommitData,
                 searchedOptions: [],
                 searchKeyword:''
             }
+        default: {
+            return {
+                ...state
+            }
+        }
     }
 
 }

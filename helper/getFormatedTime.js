@@ -1,3 +1,5 @@
+export const month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
+
 export const getFormatedTime = (input) => {
     const date = (input instanceof Date) ? input : new Date(input);
     const formatter = new Intl.RelativeTimeFormat('en');
@@ -23,7 +25,5 @@ export const getFormatedTime = (input) => {
 
 export const getFormatedDate = (input)=>{
     const d = new Date(input * 1000);
-    const month = ['Jan','Feb','Mar','Apr','May','Jun','Jul','Aug','Sep','Oct','Nov','Dec'];
-
     return 'Week of '+month[d.getMonth()] +' '+ d.getDate()+', '+d.getFullYear()
 }
